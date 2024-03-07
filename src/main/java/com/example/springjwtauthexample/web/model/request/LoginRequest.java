@@ -1,15 +1,17 @@
 package com.example.springjwtauthexample.web.model.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequest {
+    @NotEmpty(message = "Username must not be empty")
     private String username;
-    private String password;
 
+    @NotEmpty(message = "Password must not be empty")
+    private String password;
 }

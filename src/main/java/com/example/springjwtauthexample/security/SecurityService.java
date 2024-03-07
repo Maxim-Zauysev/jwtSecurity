@@ -98,8 +98,8 @@ public class SecurityService {
                 throw new AlreadyExistException("email already exist");
             }
         }
-        for (String email : request.getPhones()) {
-            if (userRepository.existsByPhonesContaining(email)) {
+        for (String phone : request.getPhones()) {
+            if (userRepository.existsByPhonesContaining(phone)) {
                 throw new AlreadyExistException("phone already exist");
             }
         }

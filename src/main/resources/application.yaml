@@ -22,8 +22,7 @@ app:
 
   bank:
     balance:
-      update:
-        on: false
+      update: true
 
 #docker exec -it bank_container bash
 #psql -U postgres -d user_db

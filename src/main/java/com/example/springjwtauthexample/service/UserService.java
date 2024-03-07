@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface UserService {
     List<User> filterBy(UserFilter filter);
-
+    User findByUsername(String username);
 }

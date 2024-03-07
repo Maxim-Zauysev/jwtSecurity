@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
 
     @Override
     public User updateEmail(String username, ChangeEmailRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
-                MessageFormat.format("user with name {0} not found", username)));
+        User user = findByUsername(username);
+
         Set<String> emails = user.getEmails();
         String oldEmail = request.getCurrentEmail();
         String newEmail = request.getNewEmail();
@@ -47,13 +47,14 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
             user.setEmails(emails);
             userRepository.save(user);
         }
+
         return user;
     }
 
     @Override
     public User addEmail(String username, AddOrRemoveEmailRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
-                MessageFormat.format("user with name {0} not found", username)));
+        User user = findByUsername(username);
+
         user.addEmail(request.getEmail());
         userRepository.save(user);
         return user;
@@ -61,20 +62,19 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
 
     @Override
     public void deleteEmail(String username, AddOrRemoveEmailRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
-                MessageFormat.format("user with name {0} not found", username)));
+        User user = findByUsername(username);
 
-        if(user.getEmails().size() <= 1){
+        if(user.getEmails().size() <= 1)
             throw new RemoveLastElementException("cannot remove last element collection");
-        }
+
         user.deleteEmail(request.getEmail());
         userRepository.save(user);
     }
 
     @Override
     public User updatePhone(String username, ChangePhoneRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
-                MessageFormat.format("user with name {0} not found", username)));
+        User user = findByUsername(username);
+
         Set<String> phones = user.getPhones();
         String oldPhone = request.getCurrentPhone();
         String newPhone = request.getNewPhone();
@@ -90,28 +90,20 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
 
     @Override
     public void deletePhone(String username, AddOrRemovePhoneRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
-                MessageFormat.format("user with name {0} not found", username)));
+        User user = findByUsername(username);
 
-        if(user.getPhones().size() <= 1){
+        if(user.getPhones().size() <= 1)
             throw new RemoveLastElementException("cannot remove last element collection");
-        }
+
         user.deletePhone(request.getPhone());
         userRepository.save(user);
     }
 
     @Override
     public User addPhone(String username, AddOrRemovePhoneRequest request) {
-        User user = userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
-                MessageFormat.format("user with name {0} not found", username)));
+        User user = findByUsername(username);
         user.addPhone(request.getPhone());
         userRepository.save(user);
-        return user;
-    }
-
-    @Transactional
-    public User findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("User with id {0} not found", id)));
         return user;
     }
 
@@ -122,5 +114,11 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
                         filter.getPageNumber(),
                         filter.getPageSize())
         ).getContent();
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException(
+                MessageFormat.format("user with name {0} not found", username)));
     }
 }
