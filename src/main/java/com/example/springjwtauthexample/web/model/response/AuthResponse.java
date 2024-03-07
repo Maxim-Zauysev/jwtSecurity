@@ -1,4 +1,4 @@
-package com.example.springjwtauthexample.web.model;
+package com.example.springjwtauthexample.web.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +19,6 @@ public class AuthResponse {
     private String username;
     private String email;
     private List<String> roles;
+
 
 }

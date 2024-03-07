@@ -1,4 +1,4 @@
-package com.example.springjwtauthexample.web.model;
+package com.example.springjwtauthexample.web.model.request;
 
 import com.example.springjwtauthexample.entity.RoleType;
 import lombok.AllArgsConstructor;
@@ -14,8 +14,10 @@ import java.util.Set;
 @Builder
 public class CreateUserRequest {
     private String username;
-    private String email;
+    private Set<String> emails;
     private Set<RoleType> roles;
     private String password;
+    private String birthDate;
+    private Set<String> phones;
 
 }

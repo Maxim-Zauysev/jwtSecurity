@@ -1,4 +1,4 @@
-package com.example.springjwtauthexample.web.model;
+package com.example.springjwtauthexample.web.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class RefreshTokenRequest {
-    private String refreshToken;
+public class LoginRequest {
+    private String username;
+    private String password;
+
 }

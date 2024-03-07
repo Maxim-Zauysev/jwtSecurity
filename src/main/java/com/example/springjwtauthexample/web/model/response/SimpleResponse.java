@@ -1,4 +1,4 @@
-package com.example.springjwtauthexample.web.model;
+package com.example.springjwtauthexample.web.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

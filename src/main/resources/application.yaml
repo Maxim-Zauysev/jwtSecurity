@@ -17,5 +17,15 @@ spring:
 app:
   jwt:
     secret: "secretKey"
-    tokenExpiration: 3m
+    tokenExpiration: 30m
     refreshTokenExpiration: 30m
+
+  bank:
+    balance:
+      update:
+        on: false
+
+#docker exec -it bank_container bash
+#psql -U postgres -d user_db
+#select * from user_schema.user_users;
+#select * from user_schema.bank_account;

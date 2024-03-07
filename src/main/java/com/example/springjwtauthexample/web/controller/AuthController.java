@@ -3,7 +3,12 @@ package com.example.springjwtauthexample.web.controller;
 import com.example.springjwtauthexample.exception.AlreadyExistException;
 import com.example.springjwtauthexample.repository.UserRepository;
 import com.example.springjwtauthexample.security.SecurityService;
-import com.example.springjwtauthexample.web.model.*;
+import com.example.springjwtauthexample.web.model.request.CreateUserRequest;
+import com.example.springjwtauthexample.web.model.request.LoginRequest;
+import com.example.springjwtauthexample.web.model.request.RefreshTokenRequest;
+import com.example.springjwtauthexample.web.model.response.AuthResponse;
+import com.example.springjwtauthexample.web.model.response.RefreshTokenResponse;
+import com.example.springjwtauthexample.web.model.response.SimpleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserRepository userRepository;
+
     private final SecurityService securityService;
 
     @PostMapping("/signin")
@@ -26,13 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<SimpleResponse> registerUser(@RequestBody CreateUserRequest userRequest){
-        if(userRepository.existsByUsername(userRequest.getUsername())){
-            throw new AlreadyExistException("Username already exist");
-        }
-        if(userRepository.existsByEmail(userRequest.getEmail())){
-            throw new AlreadyExistException("email already exist");
-        }
+    public ResponseEntity<SimpleResponse> registerUser(@RequestBody  CreateUserRequest userRequest){
         securityService.register(userRequest);
         return ResponseEntity.ok(new SimpleResponse("User created"));
     }
@@ -47,5 +46,7 @@ public class AuthController {
         securityService.logout();
         return ResponseEntity.ok(new SimpleResponse("User logout. Username is:\s" + userDetails.getUsername()));
     }
+
+
 
 }

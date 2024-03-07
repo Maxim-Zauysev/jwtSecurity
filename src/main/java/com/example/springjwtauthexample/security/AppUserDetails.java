@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.awt.font.ShapeGraphicAttribute;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
@@ -16,8 +18,8 @@ public class AppUserDetails implements UserDetails {
     public Long getId(){
         return user.getId();
     }
-    public String getEmail(){
-        return user.getEmail();
+    public Set<String> getEmail(){
+        return  user.getEmails();
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

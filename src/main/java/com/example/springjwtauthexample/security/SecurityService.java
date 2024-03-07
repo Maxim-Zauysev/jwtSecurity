@@ -1,12 +1,19 @@
 package com.example.springjwtauthexample.security;
 
+import com.example.springjwtauthexample.entity.BankAccount;
 import com.example.springjwtauthexample.entity.RefreshToken;
 import com.example.springjwtauthexample.entity.User;
+import com.example.springjwtauthexample.exception.AlreadyExistException;
 import com.example.springjwtauthexample.exception.RefreshTokenException;
+import com.example.springjwtauthexample.repository.BankAccountRepository;
 import com.example.springjwtauthexample.repository.UserRepository;
 import com.example.springjwtauthexample.security.jwt.JwtUtils;
 import com.example.springjwtauthexample.service.RefreshTokenService;
-import com.example.springjwtauthexample.web.model.*;
+import com.example.springjwtauthexample.web.model.request.CreateUserRequest;
+import com.example.springjwtauthexample.web.model.request.LoginRequest;
+import com.example.springjwtauthexample.web.model.request.RefreshTokenRequest;
+import com.example.springjwtauthexample.web.model.response.AuthResponse;
+import com.example.springjwtauthexample.web.model.response.RefreshTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +22,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +39,7 @@ public class SecurityService {
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BankAccountRepository bankAccountRepository;
 
     public AuthResponse authenticateUser(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -35,29 +49,62 @@ public class SecurityService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+
         List<String> roles = userDetails.getAuthorities()
                 .stream().map(GrantedAuthority::getAuthority)
                 .toList();
 
+
+
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
         return AuthResponse.builder()
                 .id(userDetails.getId())
                 .token(jwtUtils.generateJwtToken(userDetails))
                 .refreshToken(refreshToken.getToken())
                 .username(userDetails.getUsername())
-                .email(userDetails.getEmail())
                 .roles(roles)
                 .build();
     }
 
     public void register(CreateUserRequest request){
-        var user = User.builder()
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setInitialDeposit(BigDecimal.valueOf(100.0));
+        bankAccount.setBalance(BigDecimal.valueOf(100.0));
+
+        User user = User.builder()
                 .username(request.getUsername())
-                .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
+        try {
+            Date date = dateFormat.parse(request.getBirthDate());
 
-        user.setRoles(request.getRoles());
+            user.setBirthDate(date);
+            user.setRoles(request.getRoles());
+            user.setEmails(request.getEmails());
+            user.setPhones(request.getPhones());
+            user.setBankAccount(bankAccount);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if(userRepository.existsByUsername(request.getUsername())){
+            throw new AlreadyExistException("Username already exist");
+        }
+        for (String email : request.getEmails()) {
+            if (userRepository.existsByEmailsContaining(email)) {
+                throw new AlreadyExistException("email already exist");
+            }
+        }
+        for (String email : request.getPhones()) {
+            if (userRepository.existsByPhonesContaining(email)) {
+                throw new AlreadyExistException("phone already exist");
+            }
+        }
+
+        bankAccountRepository.save(bankAccount);
         userRepository.save(user);
     }
 
