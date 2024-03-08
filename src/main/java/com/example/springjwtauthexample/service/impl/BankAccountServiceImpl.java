@@ -1,20 +1,22 @@
 package com.example.springjwtauthexample.service.impl;
 
 import com.example.springjwtauthexample.entity.BankAccount;
-import com.example.springjwtauthexample.entity.User;
 import com.example.springjwtauthexample.exception.TransactionalException;
 import com.example.springjwtauthexample.repository.BankAccountRepository;
 import com.example.springjwtauthexample.service.BankAccountService;
 import com.example.springjwtauthexample.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BankAccountServiceImpl implements BankAccountService {
+
     private final UserService userService;
     private final BankAccountRepository bankAccountRepository;
 
@@ -34,6 +36,8 @@ public class BankAccountServiceImpl implements BankAccountService {
 
                 bankAccountRepository.save(senderAccount);
                 bankAccountRepository.save(recipientAccount);
+                log.info("Transfer of {} from {} to {} was successful.", amount, sender, recipient);
+
             }
         }
 

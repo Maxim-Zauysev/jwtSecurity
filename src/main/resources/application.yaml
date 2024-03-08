@@ -24,7 +24,3 @@ app:
     balance:
       update: true
 
-#docker exec -it bank_container bash
-#psql -U postgres -d user_db
-#select * from user_schema.user_users;
-#select * from user_schema.bank_account;

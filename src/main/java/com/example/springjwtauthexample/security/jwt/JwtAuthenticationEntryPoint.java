@@ -1,7 +1,6 @@
 package com.example.springjwtauthexample.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.ManyToOne;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

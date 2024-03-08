@@ -2,11 +2,9 @@ package com.example.springjwtauthexample.event;
 import com.example.springjwtauthexample.entity.BankAccount;
 import com.example.springjwtauthexample.repository.BankAccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Slf4j
 @Service
 @ConditionalOnProperty(
         name = "app.bank.balance.update",
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class BalanceUpdater {
 
     private final BankAccountRepository bankAccountRepository;
-    private static final Logger logger = LoggerFactory.getLogger("com.example.transactional");
+    private static final Logger logger = LoggerFactory.getLogger("com.example.transactionalz");
 
     @Transactional
     @Scheduled(fixedRate = 10000)
@@ -40,7 +39,7 @@ public class BalanceUpdater {
                 account.setBalance(newBalance);
             }
             bankAccountRepository.save(account);
-            logger.info("Баланс аккаунта {} изменен с {} на {}", account.getId(), balance, account.getBalance());
+            log.info("Balance of account {} was updated from {} to {}.", account.getId(), balance, account.getBalance());
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.example.springjwtauthexample.web.controller;
 
-import com.example.springjwtauthexample.exception.AlreadyExistException;
-import com.example.springjwtauthexample.repository.UserRepository;
 import com.example.springjwtauthexample.security.SecurityService;
 import com.example.springjwtauthexample.web.model.request.CreateUserRequest;
 import com.example.springjwtauthexample.web.model.request.LoginRequest;

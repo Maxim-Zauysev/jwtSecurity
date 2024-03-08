@@ -15,6 +15,7 @@ import com.example.springjwtauthexample.web.model.request.RefreshTokenRequest;
 import com.example.springjwtauthexample.web.model.response.AuthResponse;
 import com.example.springjwtauthexample.web.model.response.RefreshTokenResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,10 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
@@ -58,13 +57,17 @@ public class SecurityService {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return AuthResponse.builder()
+        AuthResponse response = AuthResponse.builder()
                 .id(userDetails.getId())
                 .token(jwtUtils.generateJwtToken(userDetails))
                 .refreshToken(refreshToken.getToken())
                 .username(userDetails.getUsername())
                 .roles(roles)
                 .build();
+
+        log.info("User {} authenticated successfully with roles {}", userDetails.getUsername(), roles);
+
+        return response;
     }
 
     public void register(CreateUserRequest request){
@@ -106,6 +109,7 @@ public class SecurityService {
 
         bankAccountRepository.save(bankAccount);
         userRepository.save(user);
+        log.info("User {} registered successfully with email {} and phone {}", user.getUsername(), user.getEmails(), user.getPhones());
     }
 
     public RefreshTokenResponse refreshToken(RefreshTokenRequest request){

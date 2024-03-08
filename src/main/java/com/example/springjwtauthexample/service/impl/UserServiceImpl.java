@@ -3,7 +3,6 @@ package com.example.springjwtauthexample.service.impl;
 import com.example.springjwtauthexample.entity.User;
 import com.example.springjwtauthexample.exception.EntityNotFoundException;
 import com.example.springjwtauthexample.exception.RemoveLastElementException;
-import com.example.springjwtauthexample.exception.WrongDataFormatException;
 import com.example.springjwtauthexample.repository.UserRepository;
 import com.example.springjwtauthexample.repository.UserSpecification;
 import com.example.springjwtauthexample.service.UserCommunicationService;
@@ -14,25 +13,22 @@ import com.example.springjwtauthexample.web.model.request.AddOrRemovePhoneReques
 import com.example.springjwtauthexample.web.model.request.ChangeEmailRequest;
 import com.example.springjwtauthexample.web.model.request.ChangePhoneRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserCommunicationService, UserService {
 
     private final UserRepository userRepository;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     @Override
     public User updateEmail(String username, ChangeEmailRequest request) {
         User user = findByUsername(username);
@@ -46,6 +42,7 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
             emails.add(newEmail);
             user.setEmails(emails);
             userRepository.save(user);
+            log.info("Email updated for user {} from {} to {}", username, oldEmail, newEmail);
         }
 
         return user;
@@ -57,6 +54,8 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
 
         user.addEmail(request.getEmail());
         userRepository.save(user);
+        log.info("Email {} added for user {}", request.getEmail(), username);
+
         return user;
     }
 
@@ -69,6 +68,7 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
 
         user.deleteEmail(request.getEmail());
         userRepository.save(user);
+        log.info("Email {} deleted for user {}", request.getEmail(), username);
     }
 
     @Override
@@ -84,6 +84,7 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
             phones.add(newPhone);
             user.setEmails(phones);
             userRepository.save(user);
+            log.info("Phone number updated for user {} from {} to {}", username, oldPhone, newPhone);
         }
         return user;
     }
@@ -97,6 +98,7 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
 
         user.deletePhone(request.getPhone());
         userRepository.save(user);
+        log.info("Phone number {} deleted for user {}", request.getPhone(), username);
     }
 
     @Override
@@ -104,6 +106,8 @@ public class UserServiceImpl implements UserCommunicationService, UserService {
         User user = findByUsername(username);
         user.addPhone(request.getPhone());
         userRepository.save(user);
+        log.info("Phone number {} added for user {}", request.getPhone(), username);
+
         return user;
     }
 

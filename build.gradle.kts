@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
@@ -37,6 +38,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
 	compileOnly("org.projectlombok:lombok")
+
 	runtimeOnly("org.postgresql:postgresql")
 
 	annotationProcessor("org.projectlombok:lombok")
@@ -45,6 +47,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("net.javacrumbs.json-unit:json-unit:2.38.0")
+	testImplementation("org.testcontainers:junit-jupiter:1.17.6")
+	testImplementation("org.testcontainers:postgresql:1.17.6")
 
 
 
